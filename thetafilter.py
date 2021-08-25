@@ -25,7 +25,7 @@ class thetaFilter:
         enum_rows = np.linspace(0, num_rows - 1, num_rows)               ## Se generan los vectores y el meshgrid para la matriz
         enum_cols = np.linspace(0, num_cols - 1, num_cols)
         col_iter, row_iter = np.meshgrid(enum_cols, enum_rows)
-        half_size = num_rows / 2 - 1  # here we assume num_rows = num_columns
+        half_size = num_rows / 2 # here we assume num_rows = num_columns
 
         # band pass filter mask
         band_pass_mask_1 = np.zeros_like(image_gray)  ## Se generan matrices de ceros
@@ -42,8 +42,8 @@ class thetaFilter:
         idx_low = (180 / np.pi) * (np.arctan2(arg2, arg1 * -1)) < thetamayor - 90   ## Se configuran los rangos para la mascara de acuerdo con las posiciones
         idx_high = (180 / np.pi) * (np.arctan2(arg2, arg1 * -1)) > thetamenor - 90
 
-        idx_low_2 = (180 / np.pi) * (np.arctan2(arg2, arg1 * 1)) > -(thetamayor - 90) ## Se genera loa segundos valores para la mascara como espejo de la anterior
-        idx_high_2 = (180 / np.pi) * (np.arctan2(arg2, arg1 * 1)) < -(thetamenor - 90)
+        idx_low_2 = (180 / np.pi) * (np.arctan2(arg2, arg1 * 1)) > (-thetamayor + 90) ## Se genera loa segundos valores para la mascara como espejo de la anterior
+        idx_high_2 = (180 / np.pi) * (np.arctan2(arg2, arg1 * 1)) < (-thetamenor + 90)
 
         band_pass_mask_1[idx_low]    = 1   ## se pone los valores de las mascaras en 1
         band_pass_mask_2[idx_high]   = 1
@@ -55,6 +55,7 @@ class thetaFilter:
         mask2 = cv2.bitwise_and(band_pass_mask_3, band_pass_mask_4) ## Se crea la primera mascara de acuerdo de a los segundos rangod
 
         mask_total = cv2.bitwise_or(mask, mask2)       ## Se hace un or entre las mascaras para generar la mascara total
+        mask_total[int(half_size), int(half_size)] = 1  ## Se arregla el dc rellenando el medio de la imagen
 
         fft_filtered = image_gray_fft_shift * mask_total  ## Se genera la imagen filtrada en frecuencia
         image_filtered = np.fft.ifft2(np.fft.fftshift(fft_filtered))  ## Se hace la fft inversa

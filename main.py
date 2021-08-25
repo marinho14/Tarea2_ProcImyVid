@@ -16,7 +16,7 @@ def banco_filtros(Imagen):
     imagen_2 = filtrado_2.filtering()
 
     filtrado_3 = tf(image_gray)
-    filtrado_3.set_theta(90, 5)
+    filtrado_3.set_theta(90,5)
     imagen_3 = filtrado_3.filtering()
 
     filtrado_4 = tf(image_gray)
